@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Skybound Adventure - 2D Platformer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Skybound Adventure - Smartphone Edition</title>
     <style>
         /* ==========================================================================
-           Skybound Adventure - Embedded Stylesheet (Glassmorphism & Retro Polish)
+           Skybound Adventure - Smartphone Compatible Stylesheet
            ========================================================================== */
         :root {
             --bg-dark: #0a0e17;
-            --bg-card: rgba(18, 26, 44, 0.85);
+            --bg-card: rgba(18, 26, 44, 0.88);
             --border-color: rgba(255, 255, 255, 0.18);
             --primary: #4f46e5;
             --primary-hover: #6366f1;
@@ -29,6 +31,8 @@
             padding: 0;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            touch-action: none;
         }
 
         html, body {
@@ -53,22 +57,29 @@
             flex-direction: column;
             background: #000;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(79, 70, 229, 0.3);
-            border-radius: 12px;
+            border-radius: 0;
             overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .game-wrapper {
+                border-radius: 12px;
+                height: 95vh;
+            }
         }
 
         /* Glassmorphic HUD Bar */
         .hud-bar {
             position: absolute;
-            top: 12px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: calc(100% - 32px);
+            width: calc(100% - 24px);
             max-width: 1200px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 24px;
+            padding: 8px 16px;
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -81,47 +92,48 @@
         .hud-group {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 14px;
         }
 
         .hud-stat {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 13px;
             letter-spacing: 0.5px;
         }
 
         .hud-label {
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 10px;
             text-transform: uppercase;
         }
 
         .hud-value {
             color: var(--accent-gold);
             font-family: var(--font-pixel);
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .hud-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--border-color);
             color: white;
-            padding: 6px 14px;
+            padding: 5px 10px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: all 0.2s ease;
+            touch-action: manipulation;
         }
 
-        .hud-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .hud-btn:hover, .hud-btn:active {
+            background: rgba(255, 255, 255, 0.25);
             transform: translateY(-1px);
         }
 
@@ -137,6 +149,69 @@
             width: 100%;
             height: 100%;
             display: block;
+        }
+
+        /* Touch On-Screen Controls for Mobile / Tablet */
+        .touch-overlay {
+            position: absolute;
+            bottom: 16px;
+            left: 0;
+            width: 100%;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 25;
+            pointer-events: none;
+        }
+
+        .dpad-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .touch-btn {
+            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            user-select: none;
+            touch-action: manipulation;
+            transition: transform 0.1s ease, background 0.1s ease;
+        }
+
+        .dpad-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 22px;
+        }
+
+        .action-btn {
+            width: 76px;
+            height: 76px;
+            border-radius: 24px;
+            font-size: 13px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.7), rgba(99, 102, 241, 0.9));
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.5);
+        }
+
+        .touch-btn.active, .touch-btn:active {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0.92);
         }
 
         /* Overlay Screens & Modals */
@@ -168,44 +243,43 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 36px 48px;
+            padding: 28px 32px;
             text-align: center;
-            max-width: 560px;
-            width: 90%;
+            max-width: 520px;
+            width: 92%;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
 
         .title-main {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 800;
             background: linear-gradient(135deg, #6366f1, #ec4899, #fbbf24);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 1px;
-            text-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
         }
 
         .modal-desc {
             color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         .controls-box {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 16px;
+            padding: 14px;
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             text-align: left;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .control-row {
@@ -218,31 +292,30 @@
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            padding: 4px 8px;
+            padding: 3px 6px;
             font-family: var(--font-pixel);
-            font-size: 11px;
+            font-size: 10px;
             color: white;
-            box-shadow: 0 2px 0 rgba(0,0,0,0.5);
         }
 
         .btn-action {
             background: linear-gradient(135deg, var(--primary), #4338ca);
             color: white;
             border: none;
-            padding: 14px 32px;
+            padding: 14px 28px;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
             transition: all 0.2s ease;
             width: 100%;
+            touch-action: manipulation;
         }
 
-        .btn-action:hover {
+        .btn-action:hover, .btn-action:active {
             background: linear-gradient(135deg, var(--primary-hover), #4f46e5);
             transform: translateY(-2px);
-            box-shadow: 0 14px 30px rgba(79, 70, 229, 0.6);
         }
 
         .stats-summary {
@@ -250,7 +323,7 @@
             justify-content: space-around;
             width: 100%;
             background: rgba(255, 255, 255, 0.05);
-            padding: 14px;
+            padding: 12px;
             border-radius: 10px;
         }
 
@@ -261,13 +334,13 @@
         }
 
         .summary-item label {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
         }
 
         .summary-item span {
             font-family: var(--font-pixel);
-            font-size: 18px;
+            font-size: 16px;
             color: var(--accent-gold);
         }
     </style>
@@ -292,7 +365,7 @@
                     <span id="hud-lives" class="hud-value">❤️❤️❤️</span>
                 </div>
                 <button id="btn-sound-toggle" class="hud-btn">
-                    <span id="sound-icon">🔊</span> Sound ON
+                    <span id="sound-icon">🔊</span> Mute
                 </button>
             </div>
         </div>
@@ -301,22 +374,33 @@
         <div class="viewport">
             <canvas id="gameCanvas" width="1280" height="720"></canvas>
 
+            <!-- Smartphone On-Screen Touch Controls -->
+            <div id="touch-controls" class="touch-overlay">
+                <div class="dpad-group">
+                    <button id="btn-touch-left" class="touch-btn dpad-btn" title="Left">◀</button>
+                    <button id="btn-touch-right" class="touch-btn dpad-btn" title="Right">▶</button>
+                </div>
+                <div class="action-group">
+                    <button id="btn-touch-jump" class="touch-btn action-btn" title="Jump">JUMP 🦘</button>
+                </div>
+            </div>
+
             <!-- Start Game Modal Screen -->
             <div id="start-modal" class="modal-screen active">
                 <div class="modal-card">
                     <h1 class="title-main">🎮 SKYBOUND ADVENTURE</h1>
                     <p class="modal-desc">
-                        Explore the floating sky realms! Collect ancient gold coins, stomp patrolling creatures, break hidden blocks, and reach the glowing <strong>Crystal Portal</strong> to complete your quest!
+                        Explore the sky realms! Collect gold coins, stomp creatures, break blocks, and reach the glowing <strong>Crystal Portal</strong>!
                     </p>
 
                     <div class="controls-box">
                         <div class="control-row">
                             <span>Move Left / Right:</span>
-                            <span><kbd>←</kbd> <kbd>→</kbd> / <kbd>A</kbd> <kbd>D</kbd></span>
+                            <span><kbd>◀</kbd> <kbd>▶</kbd> / <kbd>A</kbd> <kbd>D</kbd></span>
                         </div>
                         <div class="control-row">
                             <span>Jump / High Jump:</span>
-                            <span><kbd>Space</kbd> / <kbd>W</kbd> / <kbd>↑</kbd></span>
+                            <span><kbd>JUMP</kbd> / <kbd>Space</kbd> / <kbd>W</kbd></span>
                         </div>
                         <div class="control-row">
                             <span>Restart Game:</span>
@@ -357,7 +441,7 @@
             <div id="victory-modal" class="modal-screen">
                 <div class="modal-card">
                     <h1 class="title-main" style="background: linear-gradient(135deg, #10b981, #3b82f6); -webkit-background-clip: text;">🌟 LEVEL COMPLETE!</h1>
-                    <p class="modal-desc">You successfully reached the Crystal Portal and conquered the sky realms!</p>
+                    <p class="modal-desc">You reached the Crystal Portal and conquered the sky realms!</p>
 
                     <div class="stats-summary">
                         <div class="summary-item">
@@ -377,7 +461,7 @@
     </div>
 
     <!-- ==========================================================================
-         JavaScript Game Engine Code (Web Audio, Physics, Entities, Renderer)
+         JavaScript Game Engine Code (Smartphone Touch, Web Audio, Physics, Renderer)
          ========================================================================== -->
     <script>
         /* --- 1. WEB AUDIO API SYNTHESIZER SOUND SYSTEM --- */
@@ -603,13 +687,11 @@
             }
 
             static resolveEntityLevelCollision(entity, level) {
-                // Apply Gravity
                 if (!entity.isGrounded) {
                     entity.vy += Physics.GRAVITY;
                     if (entity.vy > Physics.MAX_FALL_SPEED) entity.vy = Physics.MAX_FALL_SPEED;
                 }
 
-                // Horizontal Movement & Collision
                 entity.x += entity.vx;
                 let bounds = entity.getBounds();
 
@@ -636,7 +718,6 @@
                     }
                 }
 
-                // Vertical Movement & Collision
                 entity.y += entity.vy;
                 bounds = entity.getBounds();
 
@@ -694,7 +775,7 @@
                 this.vx = 0;
                 this.vy = 0;
                 this.isGrounded = false;
-                this.invincibleTimer = 120; // 2 sec spawn immunity
+                this.invincibleTimer = 120;
                 this.dead = false;
             }
 
@@ -708,7 +789,6 @@
 
                 if (this.invincibleTimer > 0) this.invincibleTimer--;
 
-                // Horizontal Movement Acceleration
                 const accel = this.isGrounded ? 0.45 : 0.25;
                 const friction = this.isGrounded ? 0.82 : 0.95;
                 const maxSpeed = 4.8;
@@ -728,7 +808,6 @@
                 if (this.vx > maxSpeed) this.vx = maxSpeed;
                 if (this.vx < -maxSpeed) this.vx = -maxSpeed;
 
-                // Jump Physics
                 if (this.keys.jump && this.isGrounded) {
                     this.vy = -11.5;
                     this.isGrounded = false;
@@ -738,7 +817,6 @@
 
                 Physics.resolveEntityLevelCollision(this, level);
 
-                // Fall into Pit Death Check
                 if (this.y > level.height * 40 + 100) {
                     this.dead = true;
                 }
@@ -755,24 +833,20 @@
                 ctx.save();
                 if (this.invincibleTimer % 6 > 3) {
                     ctx.restore();
-                    return; // Invincibility flash
+                    return;
                 }
 
-                // Explorer Coat & Pants
-                ctx.fillStyle = '#4f46e5'; // Indigo coat
+                ctx.fillStyle = '#4f46e5';
                 ctx.fillRect(screenX + 4, this.y + 14, 20, 18);
 
-                // Explorer Head & Goggles Helmet
-                ctx.fillStyle = '#f59e0b'; // Amber helmet
+                ctx.fillStyle = '#f59e0b';
                 ctx.beginPath();
                 ctx.arc(screenX + 14, this.y + 10, 10, Math.PI, 0);
                 ctx.fill();
 
-                // Face & Goggles
                 ctx.fillStyle = '#fde047';
-                ctx.fillRect(screenX + (this.facing === 'right' ? 12 : 4), this.y + 6, 10, 5); // Goggle lens
+                ctx.fillRect(screenX + (this.facing === 'right' ? 12 : 4), this.y + 6, 10, 5);
 
-                // Boots Animation
                 ctx.fillStyle = '#1e293b';
                 const runOffset = Math.abs(this.vx) > 0.5 ? Math.floor(this.animFrame / 6) % 2 === 0 ? 3 : -3 : 0;
                 ctx.fillRect(screenX + 2, this.y + 32 + runOffset, 8, 10);
@@ -804,11 +878,10 @@
                 if (!this.active) return;
                 this.animFrame++;
 
-                // Cliff Edge Detection
                 const checkX = this.vx > 0 ? this.x + this.width + 2 : this.x - 2;
                 const tileBelow = level.getTile(Math.floor(checkX / 40), Math.floor((this.y + this.height + 4) / 40));
                 if (!tileBelow || !tileBelow.solid) {
-                    this.vx *= -1; // Turn around at ledge edge
+                    this.vx *= -1;
                 }
 
                 Physics.resolveEntityLevelCollision(this, level);
@@ -823,14 +896,12 @@
                 const screenX = this.x - cameraX;
 
                 ctx.save();
-                // Slime Body (Squish Animation)
                 const squish = Math.sin(this.animFrame * 0.15) * 3;
-                ctx.fillStyle = '#ec4899'; // Vibrant Pink Slime
+                ctx.fillStyle = '#ec4899';
                 ctx.beginPath();
                 ctx.ellipse(screenX + 16, this.y + 16 + squish / 2, 16, 12 - squish / 2, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Eyes
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
                 ctx.arc(screenX + 10, this.y + 12, 4, 0, Math.PI * 2);
@@ -848,7 +919,7 @@
         /* --- 6. LEVEL GENERATOR & OBJECTS --- */
         class Level {
             constructor() {
-                this.width = 150; // 150 * 40 = 6000px level length
+                this.width = 150;
                 this.height = 18;
                 this.grid = [];
                 this.coins = [];
@@ -876,15 +947,13 @@
                     }
                 }
 
-                // Generate Ground Terrain with Pits
                 for (let x = 0; x < this.width; x++) {
-                    if ((x >= 35 && x <= 38) || (x >= 72 && x <= 76) || (x >= 110 && x <= 114)) continue; // Pit gaps
+                    if ((x >= 35 && x <= 38) || (x >= 72 && x <= 76) || (x >= 110 && x <= 114)) continue;
                     this.setTile(x, 15, { solid: true, type: 'ground' });
                     this.setTile(x, 16, { solid: true, type: 'ground' });
                     this.setTile(x, 17, { solid: true, type: 'ground' });
                 }
 
-                // Reward & Breakable Blocks
                 const blockCoords = [
                     {x: 12, y: 11, type: 'reward'}, {x: 13, y: 11, type: 'brick'}, {x: 14, y: 11, type: 'reward'},
                     {x: 24, y: 10, type: 'brick'}, {x: 25, y: 10, type: 'reward'}, {x: 26, y: 10, type: 'brick'},
@@ -893,7 +962,6 @@
                 ];
                 blockCoords.forEach(b => this.setTile(b.x, b.y, { solid: true, type: b.type, empty: false }));
 
-                // Floating Platforms
                 const platforms = [
                     {x: 36, y: 12, w: 3}, {x: 55, y: 9, w: 4}, {x: 73, y: 12, w: 4},
                     {x: 95, y: 10, w: 5}, {x: 111, y: 12, w: 4}
@@ -904,7 +972,6 @@
                     }
                 });
 
-                // Collectible Coins
                 const coinLocations = [
                     10, 11, 15, 20, 25, 36, 37, 38, 45, 55, 56, 57, 73, 74, 75, 95, 96, 97, 120, 122, 124, 130
                 ];
@@ -912,7 +979,6 @@
                     this.coins.push({ x: cx * 40 + 10, y: 13 * 40, width: 20, height: 20, active: true });
                 });
 
-                // Spawn Patrol Enemies
                 const enemyLocations = [18, 30, 42, 62, 80, 102, 125, 135];
                 enemyLocations.forEach(ex => {
                     this.enemies.push(new PatrolEnemy(ex * 40, 14 * 40));
@@ -929,7 +995,7 @@
                 this.score = 0;
                 this.coins = 0;
                 this.lives = 3;
-                this.gameState = 'start'; // 'start', 'playing', 'gameover', 'victory'
+                this.gameState = 'start';
                 this.animFrame = 0;
 
                 this.level = new Level();
@@ -939,19 +1005,33 @@
 
                 this.initUI();
                 this.initControls();
+                this.initTouchControls();
 
                 this.loop = this.loop.bind(this);
                 requestAnimationFrame(this.loop);
             }
 
             initUI() {
-                document.getElementById('btn-start-game').addEventListener('click', () => this.startNewGame());
-                document.getElementById('btn-restart-game').addEventListener('click', () => this.startNewGame());
-                document.getElementById('btn-play-again').addEventListener('click', () => this.startNewGame());
-                document.getElementById('btn-sound-toggle').addEventListener('click', () => {
+                const startBtn = document.getElementById('btn-start-game');
+                const restartBtn = document.getElementById('btn-restart-game');
+                const playAgainBtn = document.getElementById('btn-play-again');
+                const soundToggle = document.getElementById('btn-sound-toggle');
+
+                const handleStart = (e) => {
+                    if (e) e.preventDefault();
+                    this.startNewGame();
+                };
+
+                startBtn.addEventListener('click', handleStart);
+                startBtn.addEventListener('touchstart', handleStart);
+                restartBtn.addEventListener('click', handleStart);
+                restartBtn.addEventListener('touchstart', handleStart);
+                playAgainBtn.addEventListener('click', handleStart);
+                playAgainBtn.addEventListener('touchstart', handleStart);
+
+                soundToggle.addEventListener('click', () => {
                     const isMuted = audio.toggleMute();
                     document.getElementById('sound-icon').textContent = isMuted ? '🔇' : '🔊';
-                    document.getElementById('btn-sound-toggle').contents = isMuted ? 'Sound OFF' : 'Sound ON';
                 });
             }
 
@@ -963,6 +1043,7 @@
                 };
 
                 window.addEventListener('keydown', (e) => {
+                    audio.init();
                     if (e.code === 'KeyR') this.startNewGame();
                     if (e.code === 'KeyM') {
                         const isMuted = audio.toggleMute();
@@ -972,6 +1053,41 @@
                 });
 
                 window.addEventListener('keyup', (e) => setKey(e.code, false));
+            }
+
+            initTouchControls() {
+                const btnLeft = document.getElementById('btn-touch-left');
+                const btnRight = document.getElementById('btn-touch-right');
+                const btnJump = document.getElementById('btn-touch-jump');
+
+                const bindTouch = (btn, keyProp) => {
+                    const press = (e) => {
+                        if (e) e.preventDefault();
+                        audio.init();
+                        this.player.keys[keyProp] = true;
+                        btn.classList.add('active');
+                    };
+                    const release = (e) => {
+                        if (e) e.preventDefault();
+                        this.player.keys[keyProp] = false;
+                        btn.classList.remove('active');
+                    };
+
+                    btn.addEventListener('touchstart', press, { passive: false });
+                    btn.addEventListener('touchend', release, { passive: false });
+                    btn.addEventListener('touchcancel', release, { passive: false });
+                    btn.addEventListener('mousedown', press);
+                    btn.addEventListener('mouseup', release);
+                    btn.addEventListener('mouseleave', release);
+                };
+
+                bindTouch(btnLeft, 'left');
+                bindTouch(btnRight, 'right');
+                bindTouch(btnJump, 'jump');
+
+                // Resume AudioContext on any screen touch
+                window.addEventListener('touchstart', () => audio.init(), { once: true });
+                window.addEventListener('pointerdown', () => audio.init(), { once: true });
             }
 
             startNewGame() {
@@ -1019,20 +1135,16 @@
             loop() {
                 this.animFrame++;
 
-                // Clear Screen
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
                 if (this.gameState === 'playing') {
-                    // Update Entities
                     this.player.update(this.level, this.particles);
 
-                    // Camera Follow Lerp
                     const targetCamX = this.player.x - this.canvas.width * 0.35;
                     this.cameraX += (targetCamX - this.cameraX) * 0.1;
                     if (this.cameraX < 0) this.cameraX = 0;
                     if (this.cameraX > this.level.width * 40 - this.canvas.width) this.cameraX = this.level.width * 40 - this.canvas.width;
 
-                    // Coin Pickup Check
                     this.level.coins.forEach(c => {
                         if (c.active && Physics.checkAABB(this.player.getBounds(), c)) {
                             c.active = false;
@@ -1044,14 +1156,12 @@
                         }
                     });
 
-                    // Enemies Check
                     this.level.enemies.forEach(e => {
                         if (!e.active) return;
                         e.update(this.level);
 
                         if (Physics.checkAABB(this.player.getBounds(), e.getBounds())) {
                             if (this.player.vy > 0 && this.player.y + this.player.height - this.player.vy <= e.y + 10) {
-                                // Stomp enemy
                                 e.active = false;
                                 this.player.vy = -8;
                                 this.score += 250;
@@ -1059,7 +1169,6 @@
                                 this.particles.addScoreText(e.x + 16, e.y, '+250');
                                 this.updateHUD();
                             } else if (this.player.invincibleTimer === 0) {
-                                // Player damaged
                                 this.lives--;
                                 audio.damage();
                                 this.updateHUD();
@@ -1076,7 +1185,6 @@
                         }
                     });
 
-                    // Player Fall Death Check
                     if (this.player.dead) {
                         this.lives--;
                         audio.damage();
@@ -1092,7 +1200,6 @@
                         }
                     }
 
-                    // Crystal Portal Goal Check
                     if (Math.abs(this.player.x - this.level.portalX) < 30) {
                         this.gameState = 'victory';
                         audio.victory();
@@ -1104,14 +1211,12 @@
                     this.particles.update();
                 }
 
-                // Render Background Layers (Parallax Sky & Hills)
                 const skyGrad = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
                 skyGrad.addColorStop(0, '#0f172a');
                 skyGrad.addColorStop(1, '#1e1b4b');
                 this.ctx.fillStyle = skyGrad;
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-                // Parallax Clouds
                 this.ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
                 for (let i = -100; i < 6000; i += 400) {
                     const cx = i - this.cameraX * 0.2;
@@ -1124,7 +1229,6 @@
                     }
                 }
 
-                // Render Level Tiles
                 for (let ty = 0; ty < this.level.height; ty++) {
                     for (let tx = 0; tx < this.level.width; tx++) {
                         const tile = this.level.getTile(tx, ty);
@@ -1136,7 +1240,7 @@
                             if (tile.type === 'ground') {
                                 this.ctx.fillStyle = '#065f46';
                                 this.ctx.fillRect(sx, sy, 40, 40);
-                                this.ctx.fillStyle = '#10b981'; // Green top cap
+                                this.ctx.fillStyle = '#10b981';
                                 this.ctx.fillRect(sx, sy, 40, 6);
                             } else if (tile.type === 'brick') {
                                 this.ctx.fillStyle = '#b85c37';
@@ -1161,7 +1265,6 @@
                     }
                 }
 
-                // Render Coins
                 this.level.coins.forEach(c => {
                     if (c.active) {
                         const sx = c.x - this.cameraX;
@@ -1173,7 +1276,6 @@
                     }
                 });
 
-                // Render Crystal Portal Goal
                 const portalSx = this.level.portalX - this.cameraX;
                 const aura = Math.sin(this.animFrame * 0.1) * 10;
                 this.ctx.fillStyle = 'rgba(16, 185, 129, 0.4)';
@@ -1183,7 +1285,6 @@
                 this.ctx.fillStyle = '#34d399';
                 this.ctx.fillRect(portalSx + 12, 12 * 40, 16, 48);
 
-                // Render Enemies & Player & Particles
                 this.level.enemies.forEach(e => e.draw(this.ctx, this.cameraX));
                 this.player.draw(this.ctx, this.cameraX);
                 this.particles.draw(this.ctx, this.cameraX);
@@ -1192,7 +1293,6 @@
             }
         }
 
-        // Initialize Game Instance on Window Load
         window.addEventListener('load', () => {
             window.game = new Game();
         });
