@@ -154,10 +154,10 @@
         /* Touch On-Screen Controls for Mobile / Tablet */
         .touch-overlay {
             position: absolute;
-            bottom: 16px;
+            bottom: 20px;
             left: 0;
             width: 100%;
-            padding: 0 20px;
+            padding: 0 24px;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
@@ -167,20 +167,20 @@
 
         .dpad-group {
             display: flex;
-            gap: 12px;
+            gap: 14px;
         }
 
         .action-group {
             display: flex;
-            gap: 12px;
+            gap: 14px;
         }
 
         .touch-btn {
             pointer-events: auto;
-            background: rgba(255, 255, 255, 0.16);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             color: white;
             font-weight: bold;
             display: flex;
@@ -193,24 +193,24 @@
         }
 
         .dpad-btn {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            font-size: 22px;
+            font-size: 24px;
         }
 
         .action-btn {
-            width: 76px;
-            height: 76px;
+            width: 80px;
+            height: 80px;
             border-radius: 24px;
             font-size: 13px;
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.7), rgba(99, 102, 241, 0.9));
-            border-color: rgba(99, 102, 241, 0.6);
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.5);
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.8), rgba(99, 102, 241, 0.95));
+            border-color: rgba(99, 102, 241, 0.7);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
         }
 
         .touch-btn.active, .touch-btn:active {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.5);
             transform: scale(0.92);
         }
 
@@ -642,7 +642,7 @@
                     p.x += p.vx;
                     p.y += p.vy;
                     p.life--;
-                    if (p.type === 'brick') p.vy += 0.35; // Gravity
+                    if (p.type === 'brick') p.vy += 0.35;
                     if (p.life <= 0) this.particles.splice(i, 1);
                 }
             }
@@ -1085,7 +1085,6 @@
                 bindTouch(btnRight, 'right');
                 bindTouch(btnJump, 'jump');
 
-                // Resume AudioContext on any screen touch
                 window.addEventListener('touchstart', () => audio.init(), { once: true });
                 window.addEventListener('pointerdown', () => audio.init(), { once: true });
             }
